@@ -2,53 +2,201 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>bookkeepingDB</title>
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>bookkeepingDB</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
 </head>
 
 <body>
-    <!-- <h1>hello world</h1>
+  <!-- <h1>hello world</h1>
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Est quia ea ut. Eveniet consequuntur a earum quia,
         corrupti veniam vitae rem suscipit explicabo nisi itaque quidem possimus impedit saepe rerum.</p> -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <a class="navbar-brand" href="#">Navbar</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Dropdown
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-              </li>
-            </ul>
+
+  <!-- navbar -->
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Dropdown
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Something else here</a>
           </div>
-        </nav>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- start of body -->
+
+  <div class="container-fluid mt-4">
+    <div class="input-group">
+
+      <!-- button trigger modal -->
+      <button type="button" class="btn btn-outline-primary mx-2" data-toggle="modal"
+        data-target="#newBookEntryFormModal" id="newEntryButton">New entry</button>
+
+      <input name="searchtext" class="form-control" type="text" id="searchInput">
+      
+    </div>
+    <!-- <div class="radio-input">
+              <label class="radio-inline"><input type="radio" name="options">By author</label>
+              <label class="radio-inline"><input type="radio" name="options">By book</label>
+            </div> -->
+
+
+    <!-- table contents -->
+
+    <div class="mt-2">
+      <table id="table-info" border="1" class='table table-bordered table-condensed table-striped table-hover'>
+        <tbody>
+
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- modal body for new book entry-->
+    <div class="modal fade bd-example-modal-xl" id="newBookEntryFormModal" tabindex="-1" role="dialog" aria-labelledby="BookModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5>New Book Entry/Update</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <!-- alert box -->
+            <div id="message" class="hide" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+              <div id="message-content"></div>
+            </div>
+
+            <!-- book entry/update form -->
+            <form id="book-entry-form">
+              <div class="form-group">
+                <label for="book-name">Book Name</label>
+                <input type="text" class="form-control" name="book-name" id="book-name" required="true">
+                <label for="author-name">Author Name</label>
+                <input type="text" class="form-control" name="author-name" id="author-name" required="true">
+                <label for="select-category">Select Category</label>
+                <select class="form-control" name="cat-select" id="select-category">
+
+                </select>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
+                <button type="submit" class="btn btn-primary" id="btn-submit">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal body for book info  -->
+    <div class="modal fade bd-example-modal-xl" id="BookInfoModal" tabindex="-1" role="dialog"
+      aria-labelledby="BookInfoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Info</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <!-- book information on row click -->
+          <div class="modal-body">
+            <div class="media">
+              <!-- placeholder image -->
+              <img src="./images/default-book.png" class="mr-3" alt="..." id="MediaImg">
+
+              <!-- media body -->
+              <div class="media-body col-xs-8">
+                <h5 class="mt-0"></h5>
+
+
+                <!-- book info list -->
+                <ul class="pl-0">
+                  <li id="author">Author: <a href="#">hello</a></li>
+                  <li id="category">Category: <a href="#"></a></li>
+                  <li id="bid">Book Index: <span></span></li>
+                </ul>
+              </div>
+
+              <!-- button div for edit and delete and book issue -->
+              <div class="btn-group-vertical col-xs-4" role="group" aria-label="">
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#newBookEntryFormModal"
+                  id="EditButton">
+                  <img src="./node_modules/bootstrap-icons/icons/pencil.svg" alt="" srcset="">
+                  Edit</button>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#OnDeleteModal"
+                  id="DeleteButton">
+                  <img src="./node_modules/bootstrap-icons/icons/trash.svg" alt="" srcset="">
+                  Delete</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- delete modal popup -->
+    <div class="modal fade bd-example-modal-xl" id="OnDeleteModal" tabindex="-1" role="dialog"
+    aria-labelledby="OnDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5>Do you really want to delete this entry?</h5>
+          <div class="btn-group float-right" role="group" aria-label="">
+            <button type="btn btn-light" id="DeleteConfirmBtn">Yes</button>
+            <button type="btn btn-light" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 </body>
 <script>
-    window.$ = window.jQuery = require('jQuery');
+  window.$ = window.jQuery = require('jQuery');
 </script>
+<script src="./js/semantic.min.js"></script>
 <script src="./js/bootstrap.min.js"></script>
 <script src="index.js"></script>
 

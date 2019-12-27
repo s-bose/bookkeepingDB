@@ -1,0 +1,30 @@
+#table-info > tbody > tr {
+cursor: default;
+}
+
+#MediaImg {
+    width: 64px!important;
+    height: 64px!important;
+    object-fit: cover;
+}
+
+ul {
+    list-style-type: none;
+}
+
+ul li {
+    padding-top: 10px;
+}
+
+.btn-group-vertical.col-xs-4 {
+    margin-top: 10px!important;
+    padding-top: 5px!important;
+}
+
+.btn-group-vertical.col-xs-4 .btn {
+    margin-top: 10px!important;
+}
+
+.btn-group.float-right button {
+    margin-left: 10px;
+}

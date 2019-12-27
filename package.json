@@ -9,6 +9,7 @@
         "start": "electron ."
     },
     "dependencies": {
+        "bootstrap-icons": "^1.0.0-alpha2",
         "jquery": "^3.4.1",
         "mysql": "^2.17.1"
     }
