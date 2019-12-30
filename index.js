@@ -29,6 +29,7 @@ $(document).ready(function () {
             return;
         }
         var html = '';
+        html += '<option></option>';
         rows.forEach(function (row) {
             html += '<option value=\"' + row.CategoryID + '\">'
             html += row.CategoryName;
@@ -158,6 +159,7 @@ $(document).ready(function () {
                     console.log(response);    
                     $('#book-entry-form').trigger('reset');
                     $('#message').removeClass('hide').addClass('alert alert-success alert-dismissable').slideDown().show();
+                    $('#message button span').html('&times;');
                     $('#message-content').html('<p>Success!</p>')
                     window.setTimeout(function() {
                         $(".alert").fadeTo(500, 0).slideUp(500, function(){

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+
+        <div class="container">
+
+            <div id="messages" class="hide" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <div id="messages_content"></div>
+            </div>
+
+            <form id="form" method="post">
+                <button class="btn btn-default" type="submit">Submit</button>
+            </form>
+        </div>
+
+        <script src="http://code.jquery.com/jquery.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+        <script>
+            $('#form').submit(function(e) {
+                $('#messages').removeClass('hide').addClass('alert alert-success alert-dismissible').slideDown().show();
+                $('#messages_content').html('<h4>MESSAGE HERE</h4>');
+                $('#modal').modal('show');
+                e.preventDefault();
+            });
+        </script>
+
+    </body>
+</html>
