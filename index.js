@@ -21,6 +21,13 @@ connection.connect(function (err) {
 $(document).ready(function () {
 
 
+    var generateTokenNo = function (id1, id2) {
+        var ret = id1 - id2;
+        return (ret + Math.floor((Math.random() * 100) + 1));
+    }
+
+
+
     //setting up the category list in the new book entry modal
     $categoryQuery = "SELECT * FROM `Category`";
     connection.query($categoryQuery, function (err, rows, fields) {
@@ -42,7 +49,7 @@ $(document).ready(function () {
     //search query
     let TableUpdate = function () {
         var text = document.getElementById('searchInput').value;
-        $query = "SELECT * FROM Books WHERE `BookName` LIKE \"" + text + "%\"";
+        $query = "SELECT * FROM Books WHERE `BookName` LIKE \"%" + text + "%\" or `AuthorName` LIKE \"%" + text + "%\"";
         connection.query($query, function (err, rows, fields) {
             if (err) {
                 console.log('an error has occured:');
@@ -78,11 +85,11 @@ $(document).ready(function () {
                     rowEntries.push(rowInfo[i].slice(4));
                 }
                 //console.log(rowEntries);
-                $('.media h5').html(rowEntries[1]);     //BookName
-                $('#author > a').html(rowEntries[2]);   //AuthorName
-                $('#bid > span').html(rowEntries[0]);   //BookID
-                var catID = rowEntries[3];              //CategoryID
-                
+                $('.media h5').html(rowEntries[1]); //BookName
+                $('#author > a').html(rowEntries[2]); //AuthorName
+                $('#bid > span').html(rowEntries[0]); //BookID
+                var catID = rowEntries[3]; //CategoryID
+
                 //getting the category name for the given catID
                 var catQuery = "SELECT CategoryName from Category WHERE CategoryID = \"" + catID + "\"";
                 connection.query(catQuery, function (err, rows, fields) {
@@ -90,22 +97,31 @@ $(document).ready(function () {
                     //console.log(str);
                     $('#category > a').html(str);
                 })
-                $('#EditButton').on('click', function () {
+
+
+
+                $('#EditButton').off('click').on('click', function () {
                     $('#BookInfoModal').modal('hide');
 
-                    //book entry form autofill
+                    //book entry form autofill 
+                    $('#book-id').attr('type', 'text');
+                    $('#book-id').val(rowEntries[0]);
                     $('#book-name').val(rowEntries[1]);
                     $('#author-name').val(rowEntries[2]);
                     $('#select-category').val(rowEntries[3]);
-
                     BookEntryUpdate($(this));
+                });
 
-                })
-                $('#DeleteButton').on('click', function () {
+
+
+
+                //delete button function
+
+                $('#DeleteButton').off('click').on('click', function () {
                     $('#BookInfoModal').modal('hide');
                 })
 
-                $('#DeleteConfirmBtn').click(function () {
+                $('#DeleteConfirmBtn').off('click').on('click', function () {
 
                     var deleteQuery = "DELETE FROM `Books` WHERE `BookID` = \"" + rowEntries[0] + "\"";
                     //console.log(deleteQuery);
@@ -119,6 +135,46 @@ $(document).ready(function () {
                         }
                     })
                 })
+
+
+
+                // borrow button function
+                $('#BorrowButton').off('click').on('click', function () {
+                    $('#borrow-form').trigger('reset');
+                    $('#BookInfoModal').modal('hide');
+                    $('#book-id-borrow').val(rowEntries[0]);
+                })
+
+                $('#borrow-form').off('submit').on('submit', function (e) {
+                    e.preventDefault();
+                    var book_id = $('#book-id-borrow').val();
+                    var student_id = $('#student-id').val();
+                    var transaction_id = generateTokenNo(book_id, student_id);
+                    var borrowinsertion = "insert into `StudentBooks` values (\"" + transaction_id + "\", \"" + student_id + "\", \"" + book_id + "\", CURDATE(), \"Issued\")";
+                    console.log(borrowinsertion);
+
+                    //check if even or odd number of entry for the requested bookID
+                    $query = "select count(*) count from `StudentBooks` where `BookID` = \"" + book_id + "\"";
+                    connection.query($query, function (err, rows, fields) {
+                        console.log(rows[0].count);
+                        retCount = rows[0].count;
+                        if (retCount % 2 != 0) {
+                            alert("Book is not returned yet. Cannot issue.");
+                            $('#BorrowModal').modal('hide');
+                        }
+                        else {
+                            connection.query(borrowinsertion, function (resonse) {
+                                $('#BorrowModal').modal('hide');
+                                $('#success-popup').modal('show');
+                            })
+                        }
+                    })
+
+
+                })
+
+
+                //return button modal
             })
 
         })
@@ -133,51 +189,61 @@ $(document).ready(function () {
     //new book entry submit callback
 
     var BookEntryUpdate = function (obj) {
-        
-        var newBookQuery;
+
         if (obj.is('#EditButton')) {
             console.log("called by edit button");
-            $('#book-entry-form').submit(function (event) {
-                //event.preventDefault();
+            $('#book-entry-form').off('submit').on('submit', function (event) {
+                event.preventDefault();
                 var formInfo = $(this).serializeArray();
-                newBookQuery = 'UPDATE `Books` SET `BookName` = \"' + formInfo[0].value + "\", `AuthorName` = \"" + formInfo[1].value + "\", CategoryID = \"" + formInfo[2].value + '\"';
-                //console.log(newBookQuery);
-                // connection.query(newBookQuery, function (response) {
-                //     console.log(response);
-                // })
-                console.log(newBookQuery);
-            })
-        }
-        else if (obj.is('#newEntryButton')) {
-            console.log("called by new entry button");
-            $('#book-entry-form').submit(function(e) {
-                e.preventDefault();
-                var formInfo = $(this).serializeArray();
-                var newBookQuery = 'INSERT INTO Books (BookName, AuthorName, CategoryID) VALUES(\"' + formInfo[0].value + "\", \"" + formInfo[1].value + "\", \"" + formInfo[2].value + '\")';
-                console.log(newBookQuery);
-                connection.query(newBookQuery, function (response) {
-                    console.log(response);    
-                    $('#book-entry-form').trigger('reset');
-                    $('#message').removeClass('hide').addClass('alert alert-success alert-dismissable').slideDown().show();
-                    $('#message button span').html('&times;');
-                    $('#message-content').html('<p>Success!</p>')
-                    window.setTimeout(function() {
-                        $(".alert").fadeTo(500, 0).slideUp(500, function(){
-                            $(this).remove(); 
-                        });
-                    }, 1000);
+                console.log(formInfo);
+                BookUpdateQuery = 'UPDATE `Books` SET `BookName` = \"' + formInfo[1].value + "\", `AuthorName` = \"" + formInfo[2].value + "\", CategoryID = \"" + formInfo[3].value + '\" WHERE `BookID` = \"' + formInfo[0].value + '\"';
+                console.log(BookUpdateQuery);
+                connection.query(BookUpdateQuery, function (response) {
+                    console.log(response);
+                    $('#NewBookEntryFormModal').modal('hide');
+                    alert('successfully updated!');
                 })
+                //console.log(newBookQuery);
+                //$(this).trigger('reset');
+                TableUpdate();
                 return false;
             })
-        }
-        else {
+            return;
+        } else if (obj.is('#newEntryButton')) {
+            console.log("called by new entry button");
+            $('#book-entry-form').off('submit').on('submit', function (e) {
+                e.preventDefault();
+                var formInfo = $(this).serializeArray();
+                var newBookQuery = 'INSERT INTO Books (BookName, AuthorName, CategoryID) VALUES(\"' + formInfo[1].value + "\", \"" + formInfo[2].value + "\", \"" + formInfo[3].value + '\")';
+                console.log(newBookQuery);
+                connection.query(newBookQuery, function (response) {
+                    console.log(response);
+                    alert("successfully inserted!");
+                    $('#book-entry-form').trigger('reset');
+                    // $('#message').removeClass('hide').addClass('alert alert-success alert-dismissable').slideDown().show();
+                    // $('#message button span').html('&times;');
+                    // $('#message-content').html('<p>Success!</p>')
+                    // window.setTimeout(function() {
+                    //     $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                    //         $(this).remove(); 
+                    //     });
+                    // }, 1000);
+                })
+                TableUpdate();
+                return false;
+            })
+        } else {
             console.error("BookEntry called from unknown source");
         }
-        
+
     }
 
+
+
+
     //calling BookEntryUpdate from NewEntryButton
-    $('#newEntryButton').on('click', function() {
+    $('#newEntryButton').on('click', function () {
+        $('#book-id').attr('type', 'hidden');
         $('#book-entry-form').trigger("reset");
         BookEntryUpdate($(this));
     })

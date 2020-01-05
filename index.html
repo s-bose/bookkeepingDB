@@ -18,7 +18,7 @@
   <!-- navbar -->
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="#">bookkeepingDB</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -29,24 +29,20 @@
         <li class="nav-item active">
           <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            Dropdown
+            Tools
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Dashboard</a>
+            <a class="dropdown-item" href="#">Admin Tools</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
+            <a class="dropdown-item" href="#">Logout</a>
           </div>
         </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
+
       </ul>
     </div>
   </nav>
@@ -54,14 +50,34 @@
   <!-- start of body -->
 
   <div class="container-fluid mt-4">
+
+    <!-- header tools -->
+
     <div class="input-group">
 
-      <!-- button trigger modal -->
-      <button type="button" class="btn btn-outline-primary mx-2" data-toggle="modal"
-        data-target="#newBookEntryFormModal" id="newEntryButton">New entry</button>
+      <!-- dropdown button -->
+      <div class="dropdown">
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle mx-2" id="actionDropdown"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
 
-      <input name="searchtext" class="form-control" type="text" id="searchInput">
-      
+        <div class="dropdown-menu" aria-labelledby="actionDropdown">
+
+          <!-- new book entry modal trigger -->
+          <button class="dropdown-item" type="button" id="newEntryButton" data-toggle="modal"
+            data-target="#newBookEntryFormModal">
+            <img src="./node_modules/bootstrap-icons/icons/plus.svg" alt="" srcset="">
+            New Entry</button>
+          <button class="dropdown-item" type="button" id="returnButton" data-toggle="modal" data-target="#return-popup">
+            <img src="./node_modules/bootstrap-icons/icons/arrow-clockwise.svg" alt="">
+            Return</button>
+
+        </div>
+      </div>
+
+      <!-- search text -->
+      <input name="searchtext" class="form-control" type="text" id="searchInput"
+        placeholder="Search with book or author keyword...">
+
     </div>
     <!-- <div class="radio-input">
               <label class="radio-inline"><input type="radio" name="options">By author</label>
@@ -81,8 +97,8 @@
 
 
     <!-- modal body for new book entry-->
-    <div class="modal fade bd-example-modal-xl" id="newBookEntryFormModal" tabindex="-1" role="dialog" aria-labelledby="BookModalLabel"
-      aria-hidden="true">
+    <div class="modal fade bd-example-modal-xl" id="newBookEntryFormModal" tabindex="-1" role="dialog"
+      aria-labelledby="BookModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -93,21 +109,18 @@
           </div>
           <div class="modal-body">
 
-            <!-- alert box -->
-            <div id="message" class="hide" role="alert">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true"></span></button>
-              <div id="message-content"></div>
-            </div>
 
             <!-- book entry/update form -->
             <form id="book-entry-form">
               <div class="form-group">
+
+                <input type="hidden" class="form-control" name="book-id" id="book-id" readonly>
                 <label for="book-name">Book Name</label>
                 <input type="text" class="form-control" name="book-name" id="book-name" required="true">
                 <label for="author-name">Author Name</label>
                 <input type="text" class="form-control" name="author-name" id="author-name" required="true">
                 <label for="select-category">Select Category</label>
-                <select class="form-control" name="cat-select" id="select-category">
+                <select class="form-control" name="cat-select" id="select-category" required="true">
 
                 </select>
               </div>
@@ -158,10 +171,17 @@
                   id="EditButton">
                   <img src="./node_modules/bootstrap-icons/icons/pencil.svg" alt="" srcset="">
                   Edit</button>
+
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#BorrowModal"
+                  id="BorrowButton">
+                  <img src="./node_modules/bootstrap-icons/icons/document-spreadsheet.svg" alt="" srcset="">
+                  Borrow</button>
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#OnDeleteModal"
                   id="DeleteButton">
                   <img src="./node_modules/bootstrap-icons/icons/trash.svg" alt="" srcset="">
                   Delete</button>
+
+
               </div>
             </div>
 
@@ -172,32 +192,120 @@
 
     <!-- delete modal popup -->
     <div class="modal fade bd-example-modal-xl" id="OnDeleteModal" tabindex="-1" role="dialog"
-    aria-labelledby="OnDeleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <h5>Do you really want to delete this entry?</h5>
-          <div class="btn-group float-right" role="group" aria-label="">
-            <button type="btn btn-light" id="DeleteConfirmBtn">Yes</button>
-            <button type="btn btn-light" data-dismiss="modal">No</button>
+      aria-labelledby="OnDeleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h5>Do you really want to delete this entry?</h5>
+            <div class="btn-group float-right" role="group" aria-label="">
+              <button type="btn btn-light" id="DeleteConfirmBtn">Yes</button>
+              <button type="btn btn-light" data-dismiss="modal">No</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
+
+    <!-- book borrow entry form modal -->
+    <div class="modal fade bd-example-modal-xl" id="BorrowModal" tabindex="-1" role="dialog"
+      aria-labelledby="BorrowModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="borrow-form">
+              <div class="form-group">
+
+                <label for="book-id-borrow">Book ID</label>
+                <input type="text" class="form-control" name="book-id-borrow" id="book-id-borrow" readonly>
+                <label for="student ID">Enter your student ID *</label>
+                <input type="text" class="form-control" name="student-id" id="student-id" required="true">
+
+              </div>
+
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
+                <button type="submit" class="btn btn-success" id="btn-borrow-submit">Submit</button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- borrow success receipt modal -->
+    <div class="modal" id="success-popup" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Issue Successful</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Generate Slip</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- return trigger popup modal -->
+    <div class="modal" id="return-popup" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Book Return</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <label for="token-id">Enter the Token ID*</label>
+            <input type="text" class="form-control" name="token-id" id="token-id" required>
+            <form id="issue-info-form" hidden>
+              <label for="student-id">Student ID</label>
+              <input type="text" class="form-control" name="student-id" readonly>
+              <label for="">Book ID</label>
+              <input type="text" class="form-control" name="book-id" readonly>
+              <label for="">Issue Date</label>
+              <input type="text" class="form-control" name="issue-date" readonly>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Return</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
 </body>
 <script>
   window.$ = window.jQuery = require('jQuery');
 </script>
-<script src="./js/semantic.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.0.4/popper.js"></script>
+
 <script src="./js/bootstrap.min.js"></script>
+
 <script src="index.js"></script>
 
 </html>

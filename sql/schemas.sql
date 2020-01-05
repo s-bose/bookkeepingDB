@@ -58,6 +58,19 @@ CREATE TABLE Students (
 );
 INSERT INTO Students(StudentID, StudentName, DeptID, EmailID, Address) VALUES(9400710, "Arijit Pandey", 2, "pandey.arijit62@gmail.com", "243 Kochi Lane, Delhi");
 
+SET GLOBAL FOREIGN_KEY_CHECKS=0;
 
+CREATE TABLE StudentBooks (
+    `TransactionID` INT NOT NULL,
+    `StudentID` INT NOT NULL,
+    `BookID` INT NOT NULL,
+    `IssueDate` DATE NOT NULL,
+    `ActionType` ENUM ('Issued', 'Returned') NOT NULL,
+    PRIMARY KEY (TransactionID),
+    CONSTRAINT FK_stud_ID FOREIGN KEY (StudentID)
+    REFERENCES Students(StudentID),
+    CONSTRAINT FK_Book_ID FOREIGN KEY (BookID)
+    REFERENCES Books(BookID)
+)
 
 
