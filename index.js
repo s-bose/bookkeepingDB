@@ -21,13 +21,6 @@ connection.connect(function (err) {
 $(document).ready(function () {
 
 
-    var generateTokenNo = function (id1, id2) {
-        var ret = id1 - id2;
-        return (ret + Math.floor((Math.random() * 100) + 1));
-    }
-
-
-
     //setting up the category list in the new book entry modal
     $categoryQuery = "SELECT * FROM `Category`";
     connection.query($categoryQuery, function (err, rows, fields) {
@@ -149,11 +142,12 @@ $(document).ready(function () {
                     e.preventDefault();
                     var book_id = $('#book-id-borrow').val();
                     var student_id = $('#student-id').val();
-                    var transaction_id = generateTokenNo(book_id, student_id);
-                    var borrowinsertion = "insert into `StudentBooks` values (\"" + transaction_id + "\", \"" + student_id + "\", \"" + book_id + "\", CURDATE(), \"Issued\")";
+
+                    var borrowinsertion = "insert into `StudentBooks`(StudentID, BookID, IssueDate, ActionType) values (\"" + student_id + "\", \"" + book_id + "\", SYSDATE(), \"Issued\")";
                     console.log(borrowinsertion);
 
-                    //check if even or odd number of entry for the requested bookID
+                    //if there's odd no of BookID entry that means everyone who once borrowed returned
+                    //it its even then someone hasnt returned
                     $query = "select count(*) count from `StudentBooks` where `BookID` = \"" + book_id + "\"";
                     connection.query($query, function (err, rows, fields) {
                         console.log(rows[0].count);
@@ -161,27 +155,22 @@ $(document).ready(function () {
                         if (retCount % 2 != 0) {
                             alert("Book is not returned yet. Cannot issue.");
                             $('#BorrowModal').modal('hide');
-                        }
-                        else {
+                        } else {
                             connection.query(borrowinsertion, function (resonse) {
                                 $('#BorrowModal').modal('hide');
                                 $('#success-popup').modal('show');
                             })
                         }
                     })
-
-
                 })
-
-
-                //return button modal
             })
+
+
 
         })
 
     }
-    //var searchButton = document.getElementById('Search');
-    //searchButton.addEventListener("click", update);
+
 
     //on search input, call TableUpdate() to refresh table contents
     document.getElementById('searchInput').addEventListener("keyup", TableUpdate);
@@ -248,4 +237,69 @@ $(document).ready(function () {
         BookEntryUpdate($(this));
     })
 
+
+    //return button modal
+    $('#returnButton').off('click').on('click', function () {
+        console.log('inside return button');
+
+        $('#token-id').on('keypress', function (e) {
+            if (e.which == 13) {
+                let tid = $(this).val();
+                //console.log(tid);
+
+
+                //create a query to search for the given token id
+                var transactionQuery = "select * from `StudentBooks` where `TransactionID` = \"" + tid + "\"";
+                console.log(transactionQuery);
+                connection.query(transactionQuery, function (err, rows, fields) {
+                    if (rows.length === 0) {
+                        //entry does not exist
+                        alert("Wrong Token No.");
+                    } else {
+                        //console.log(rows);
+
+                        $('#b-id > a').html(rows[0].BookID); //BookID
+                        $('#stu-id > a').html(rows[0].StudentID); //StudentID
+                        $('#issue-date > span').html(rows[0].IssueDate.toString().slice(0, 24)); //issued date
+                        $('#status > span').html(rows[0].ActionType); //status: issued/returned
+
+                        $('#return-popup div ul').toggle();
+
+                        $('#return-submit').off('click').on('click', function() {
+                            //...
+                            var return_query = "insert into `StudentBooks`(StudentID, BookID, IssueDate, ActionType) values (\"" + rows[0].StudentID + "\", \"" + rows[0].BookID + "\", SYSDATE(), \"Returned\")";
+                            //console.log(return_query);
+
+
+                            //if there's odd no of BookID entry that means the return is possible
+                            //if even, then you are trying to return something that is already retured
+                            let countquery = "select count(*) count from `StudentBooks` where `BookID` = \"" + rows[0].BookID + "\"";
+                            //console.log(countquery);
+                            connection.query(countquery, function (err, rows, fields) {
+                            
+                                retCount = rows[0].count;
+                                
+                                if (retCount % 2 == 0) {
+                                    alert("Book is already returned. Cannot re-return");
+                                    $('#return-popup').modal('hide');
+                                } else {
+                                    //return is fine.
+                                    connection.query(return_query, function (resonse) {
+                                        $('#return-popup').modal('hide');
+                                        $('#success-popup').modal('show');
+                                    })
+                                }
+                            })
+                        })
+
+                    }
+                })
+
+
+            }
+        })
+
+
+
+    })
 })

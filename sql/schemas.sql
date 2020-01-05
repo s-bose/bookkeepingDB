@@ -61,7 +61,7 @@ INSERT INTO Students(StudentID, StudentName, DeptID, EmailID, Address) VALUES(94
 SET GLOBAL FOREIGN_KEY_CHECKS=0;
 
 CREATE TABLE StudentBooks (
-    `TransactionID` INT NOT NULL,
+    `TransactionID` INT NOT NULL AUTO_INCREMENT,
     `StudentID` INT NOT NULL,
     `BookID` INT NOT NULL,
     `IssueDate` DATE NOT NULL,

@@ -159,7 +159,7 @@
 
                 <!-- book info list -->
                 <ul class="pl-0">
-                  <li id="author">Author: <a href="#">hello</a></li>
+                  <li id="author">Author: <a href="#"></a></li>
                   <li id="category">Category: <a href="#"></a></li>
                   <li id="bid">Book Index: <span></span></li>
                 </ul>
@@ -246,7 +246,7 @@
     </div>
 
 
-    <!-- borrow success receipt modal -->
+    <!-- borrow/return success receipt modal -->
     <div class="modal" id="success-popup" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -281,17 +281,17 @@
           <div class="modal-body">
             <label for="token-id">Enter the Token ID*</label>
             <input type="text" class="form-control" name="token-id" id="token-id" required>
-            <form id="issue-info-form" hidden>
-              <label for="student-id">Student ID</label>
-              <input type="text" class="form-control" name="student-id" readonly>
-              <label for="">Book ID</label>
-              <input type="text" class="form-control" name="book-id" readonly>
-              <label for="">Issue Date</label>
-              <input type="text" class="form-control" name="issue-date" readonly>
-            </form>
+
+            <ul class="pl-0" id="issue-info" style="display:none">
+              <li id="stu-id">Student ID: <a href="#"></a></li>
+              <li id="b-id">Book ID: <a href="#"></a></li>
+              <li id="issue-date">Issue Date: <span></span></li>
+              <li id="status">Status: <span></span></li>
+
+            </ul>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Return</button>
+            <button type="button" class="btn btn-primary" id="return-submit">Return</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
