@@ -52,7 +52,7 @@ $(document).ready(function () {
 
             //row entries for the book list
             var html = '';
-            html += "<tr><th>ID</th><th>name</th><th>author</th><th>Category ID</th></tr>"
+            html += "<tr><th>Book ID</th><th>Name</th><th>Author</th><th>Category</th></tr>"
             rows.forEach(function (row) {
                 html += '<tr class="clickable-row" data-toggle="modal" data-target="#BookInfoModal">';
                 html += '<td>';
@@ -290,16 +290,10 @@ $(document).ready(function () {
                                     })
                                 }
                             })
-                        })
-
+                       })
                     }
                 })
-
-
             }
         })
-
-
-
     })
 })

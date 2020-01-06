@@ -5,26 +5,28 @@ const path = require("path");
 const url = require("url");
 
 function createWindow() {
-    let quoteWidget = new BrowserWindow({
+    let bookkeepingDB = new BrowserWindow({
         title: "wallpapers",
         show: false,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            devTools: false
         }
     });
 
-    quoteWidget.loadURL(url.format({
+    bookkeepingDB.loadURL(url.format({
         pathname: path.join(__dirname, "index.html"),
         protocol: "file",
         slashes: "true"
     }))
 
-    quoteWidget.once('ready-to-show', () => {
-        quoteWidget.show();
+    bookkeepingDB.once('ready-to-show', () => {
+        bookkeepingDB.maximize();
+        bookkeepingDB.show();
     })
 
-    quoteWidget.on('closed', () => {
-        quoteWidget = null
+    bookkeepingDB.on('closed', () => {
+        bookkeepingDB = null
     })
 
 }
