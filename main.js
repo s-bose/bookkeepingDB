@@ -31,4 +31,5 @@ function createWindow() {
 
 }
 
+// starting the main process
 app.on('ready', createWindow);

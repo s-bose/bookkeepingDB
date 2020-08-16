@@ -1,5 +1,8 @@
+
+// using mysql library for js 
 var mysql = require('mysql');
 
+// database settings
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
